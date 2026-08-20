@@ -33,8 +33,8 @@ function generateFallbackExplanation(facts: DeterministicFacts): AuraExplanation
       potential_impact: `If the contract contains vulnerabilities or turns malicious, up to $${facts.potentialExposureUsd.toLocaleString()} (${facts.walletExposurePercent}% of your active portfolio) could be drained.`,
       risk_explanation: facts.riskSignals.map((s) => `${s.title}: ${s.description}`),
       recommendation: 'LIMIT_APPROVAL',
-      recommendation_detail: `Do not approve unlimited access. AURA strongly recommends limiting the approval to the exact amount needed for this interaction (e.g. $500 ${facts.tokenSymbol}).`,
-      recommended_limit_amount: '500',
+      recommendation_detail: `Do not approve unlimited access. AURA strongly recommends limiting the approval to the exact amount needed for this interaction (e.g. 1 ${facts.tokenSymbol || 'USDT'}).`,
+      recommended_limit_amount: '1',
       confidence: 0.96,
       uncertainty: facts.contractVerified ? [] : ['Contract bytecode is unverified on the explorer; internal logic cannot be audited.'],
     };
@@ -93,7 +93,7 @@ CRITICAL SYSTEM INSTRUCTIONS (PRD RULES):
 2. If facts indicate an UNLIMITED approval on a new or unverified contract, clearly advise the user to LIMIT or REJECT the approval.
 3. Distinguish FACT, INFERENCE, and UNCERTAINTY.
 4. Keep the tone calm, serious, and protective. No crypto hype or alarmist panic.
-5. Provide actionable recommendations (e.g. recommend exact safer amount like $500 if unlimited).
+5. Provide actionable recommendations (e.g. recommend exact safer amount like 1 USDT if unlimited).
 
 Return the response in the specified JSON schema.`;
 

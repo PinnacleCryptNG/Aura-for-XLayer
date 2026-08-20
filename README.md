@@ -18,9 +18,9 @@
 
 ## ⚡ Network Details (OKX X Layer)
 
-| Parameter | Mainnet | Testnet |
+| Parameter | Mainnet | Enhanced Testnet (Active) |
 | :--- | :--- | :--- |
-| **Chain ID** | `196` | `1952` |
+| **Chain ID** | `196` | `1952` *(Note: Deprecated testnet chain ID `195` migrated to `1952`)* |
 | **Gas Token** | OKB | OKB |
 | **RPC URL** | `https://rpc.xlayer.tech` / `https://xlayerrpc.okx.com` | `https://testrpc.xlayer.tech` |
 | **Block Explorer** | [OKX Explorer (X Layer)](https://www.okx.com/web3/explorer/xlayer) | [OKX Explorer (Testnet)](https://www.okx.com/web3/explorer/xlayer-test) |
@@ -31,7 +31,7 @@
 ## 🚀 Tech Stack
 
 - **Frontend**: React 19, TypeScript, Tailwind CSS v4, Motion, Lucide React
-- **Blockchain Interface**: [Viem](https://viem.sh) (EVM interaction, ABI decoding, and multi-RPC state reads)
+- **Blockchain Interface**: [Viem](https://viem.sh) (EVM interaction, ABI decoding, and multi-RPC state reads configured for Chain IDs 196 & 1952)
 - **Backend API**: Express.js, Node.js (`tsx` / `esbuild`)
 - **AI Intelligence**: Google Gemini API (`@google/genai`) for grounded risk summaries and question answering
 
@@ -48,8 +48,8 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/aura-xlayer.git
-   cd aura-xlayer
+   git clone https://github.com/PinnacleCryptNG/Aura-for-XLayer.git
+   cd Aura-for-XLayer
    ```
 
 2. **Install dependencies:**
@@ -114,6 +114,33 @@
 - **Zero-Storage of Secrets**: No private keys, mnemonic phrases, or personal user data are stored on any server.
 - **Fail-Safe Defaults**: If external enrichment services are unavailable, AURA falls back to deterministic on-chain static bytecode analysis and verified ABI parsing.
 - **Complementary Safety**: Designed to work seamlessly alongside wallet-level security as an added verification barrier before signatures are committed.
+
+---
+
+## 🧪 How to Test (For Judges)
+
+Judges can test AURA immediately either in live mode with testnet funds or by copying the pre-formatted malicious simulation payload below into the app's payload inspector:
+
+### 1. Claim Testnet OKB
+- Get free X Layer Testnet OKB from the official faucet:  
+  👉 **[Official OKX X Layer Faucet](https://www.okx.com/xlayer/faucet)** (or switch your OKX Wallet / MetaMask to **X Layer Testnet - Chain ID 1952**).
+
+### 2. Live Threat Simulation (Copy & Paste Test)
+Test AURA's real-time interception and plain-English risk breakdown by simulating an **unlimited USDT drainer trap**:
+
+- **Target / Token Contract Address** (USDT on X Layer):
+  ```text
+  0x1E4a5963aBFD975d8c9021ce480b42188849D41d
+  ```
+- **Malicious Unlimited Approval Calldata** (Grants unverified spender `0x8391a2...` infinite access `type(uint256).max`):
+  ```text
+  0x095ea7b30000000000000000000000008391a27f69201f8449c239d1089201a4e8291a27ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  ```
+
+### 3. What to Observe:
+1. **Critical Risk Alert**: AURA flags the unverified contract, 2-day-old interaction history, and unlimited exposure.
+2. **Plain-English Translation**: Explains clearly: *"You are granting Unknown Website Trap unlimited permission to spend your USDT."*
+3. **One-Click Mitigation**: Click **"Limit to 1 USDT (Recommended)"** to rewrite the calldata to a safe capped allowance of 1 USDT (`0x00000000000000000000000000000000000000000000000000000000000f4240`).
 
 ---
 
