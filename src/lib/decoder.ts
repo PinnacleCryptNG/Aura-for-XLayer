@@ -56,13 +56,11 @@ export function decodeAndAnalyzeTx(input: RawTxInput): DeterministicFacts {
     category: 'Unverified Contract',
   };
 
-  // Build OKLink Explorer Metadata
+  // Build X Layer Explorer Metadata
   const explorerBase =
     chainId === 196
-      ? 'https://www.oklink.com/xlayer'
-      : chainId === 1952
-      ? 'https://www.oklink.com/xlayer-test'
-      : 'https://etherscan.io';
+      ? 'https://www.okx.com/web3/explorer/xlayer'
+      : 'https://www.okx.com/web3/explorer/xlayer-test';
 
   const oklinkMeta: OklinkMetadata = {
     verified: baseContractMeta.verified,
@@ -126,7 +124,7 @@ export function decodeAndAnalyzeTx(input: RawTxInput): DeterministicFacts {
       potentialExposureUsd = walletAssetUsdValue; // Whole balance at risk
     } else {
       isUnlimitedApproval = false;
-      const parsedNum = parseInt(amountHex || '0', 16) / 1e6 || 500;
+      const parsedNum = parseInt(amountHex || '0', 16) / 1e6 || 1;
       requestedAmountFormatted = `$${parsedNum.toLocaleString()} ${tokenSymbol}`;
       potentialExposureUsd = parsedNum;
     }
@@ -152,18 +150,18 @@ export function decodeAndAnalyzeTx(input: RawTxInput): DeterministicFacts {
   ) {
     txType = 'DEX_SWAP';
     const slippage = input.customSlippage !== undefined ? input.customSlippage : 12.5; // High slippage demo trap default or user set
-    const inputAmt = '1,000.00 USDT';
-    const inputUsd = 1000;
-    const expectedOut = '17.24 OKB';
-    const minOut = slippage > 5 ? '15.08 OKB (-12.5% max slippage)' : '17.15 OKB (-0.5% max slippage)';
-    const outUsd = 1000;
+    const inputAmt = '1.00 USDT';
+    const inputUsd = 1.0;
+    const expectedOut = '0.017 OKB';
+    const minOut = slippage > 5 ? '0.015 OKB (-12.5% max slippage)' : '0.017 OKB (-0.5% max slippage)';
+    const outUsd = 1.0;
 
     potentialExposureUsd = inputUsd;
-    requestedAmountFormatted = `Swap 1,000 USDT for ~17.24 OKB`;
+    requestedAmountFormatted = `Swap 1 USDT for ~0.017 OKB`;
 
     swapDetails = {
       inputTokenSymbol: 'USDT',
-      inputTokenAmount: '1,000.00',
+      inputTokenAmount: '1.00',
       inputTokenUsd: inputUsd,
       outputTokenSymbol: 'OKB',
       expectedOutputAmount: expectedOut,
@@ -182,7 +180,7 @@ export function decodeAndAnalyzeTx(input: RawTxInput): DeterministicFacts {
     simulationAssetDeltas = [
       {
         asset: 'USDT',
-        delta: '-1,000.00 USDT',
+        delta: '-1.00 USDT',
         isDrain: false,
         to: targetAddress,
       },
@@ -201,12 +199,12 @@ export function decodeAndAnalyzeTx(input: RawTxInput): DeterministicFacts {
       data.length >= 74
         ? '0x' + data.slice(34, 74)
         : '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5';
-    requestedAmountFormatted = '$50.00 USDT';
-    potentialExposureUsd = 50;
+    requestedAmountFormatted = '1 USDT';
+    potentialExposureUsd = 1;
     simulationAssetDeltas = [
       {
         asset: 'USDT',
-        delta: '-50.00 USDT',
+        delta: '-1.00 USDT',
         isDrain: false,
         to: toRecipient,
       },

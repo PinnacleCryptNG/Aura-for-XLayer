@@ -30,8 +30,8 @@ export const XLAYER_PARAMS: Record<number, any> = {
       symbol: 'OKB',
       decimals: 18,
     },
-    rpcUrls: ['https://rpc.xlayer.tech'],
-    blockExplorerUrls: ['https://www.oklink.com/xlayer'],
+    rpcUrls: ['https://rpc.xlayer.tech', 'https://xlayerrpc.okx.com'],
+    blockExplorerUrls: ['https://www.okx.com/web3/explorer/xlayer'],
   },
   1952: {
     chainId: '0x7a0', // 1952
@@ -42,11 +42,11 @@ export const XLAYER_PARAMS: Record<number, any> = {
       decimals: 18,
     },
     rpcUrls: ['https://testrpc.xlayer.tech'],
-    blockExplorerUrls: ['https://www.oklink.com/xlayer-test'],
+    blockExplorerUrls: ['https://www.okx.com/web3/explorer/xlayer-test'],
   },
 };
 
-// Popular X Layer Tokens & Key Spenders for Live Scanning
+// Popular real X Layer Tokens & Key Spenders for Live Scanning
 export const XLAYER_POPULAR_TOKENS = [
   {
     symbol: 'USDT',
@@ -57,15 +57,22 @@ export const XLAYER_POPULAR_TOKENS = [
   },
   {
     symbol: 'USDC',
-    name: 'USD Coin',
+    name: 'USD Coin (Native Circle)',
     address: '0xA8CE8aee21bC2A48a5EF670afCc9274C7bbbC035',
+    decimals: 6,
+    priceUsd: 1.0,
+  },
+  {
+    symbol: 'USDT0',
+    name: 'USDT0 (LayerZero)',
+    address: '0x89D22BCe26860E80FE22A309eA80129B7F13eE0C',
     decimals: 6,
     priceUsd: 1.0,
   },
   {
     symbol: 'WOKB',
     name: 'Wrapped OKB',
-    address: '0xe538905cf8410324e03a5a23c1c177a474d59b2b',
+    address: '0xe538905cf84773204c955a8206122d646b9a8cf6',
     decimals: 18,
     priceUsd: 58.0,
   },
@@ -80,7 +87,7 @@ export const XLAYER_POPULAR_TOKENS = [
 
 export const XLAYER_KNOWN_SPENDERS = [
   {
-    name: 'OKX DEX Aggregator Router',
+    name: 'OKX DEX Smart Router',
     address: '0x388c818ca8b9251b393131c08a736a67ccb19297',
     status: 'VERIFIED' as ContractStatus,
     verified: true,
@@ -94,7 +101,7 @@ export const XLAYER_KNOWN_SPENDERS = [
     reputationScore: 18,
   },
   {
-    name: 'Legacy Aggregator v1',
+    name: 'Old Trading App v1',
     address: '0x7a250d5630b4cf539739df2c5dacb4c659f2488d',
     status: 'SUSPICIOUS' as ContractStatus,
     verified: false,
@@ -153,7 +160,7 @@ export async function scanLiveXLayerAllowances(
   const client = getViemPublicClient(chainId);
   const results: ApprovalItem[] = [];
   const explorerBase =
-    chainId === 196 ? 'https://www.oklink.com/xlayer' : 'https://www.oklink.com/xlayer-test';
+    chainId === 196 ? 'https://www.okx.com/web3/explorer/xlayer' : 'https://www.okx.com/web3/explorer/xlayer-test';
 
   for (const token of XLAYER_POPULAR_TOKENS) {
     for (const spender of XLAYER_KNOWN_SPENDERS) {

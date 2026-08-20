@@ -2,9 +2,8 @@
 
 @layer base {
   :root {
-    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
-    --font-display: 'Space Grotesk', -apple-system, sans-serif;
   }
 }
 
@@ -22,19 +21,15 @@
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom, 0.5rem);
   }
-
-  .font-display {
-    font-family: var(--font-display);
-  }
 }
 
 html, body {
-  background-color: #090d16;
+  background-color: #0b1222;
   color: #f1f5f9;
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   max-width: 100vw;
-  letter-spacing: -0.011em;
+  line-height: 1.6;
 }
 
 code, pre, .font-mono {
@@ -43,11 +38,11 @@ code, pre, .font-mono {
 
 /* Custom refined scrollbar */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #0b1222;
 }
 ::-webkit-scrollbar-thumb {
   background: #1e293b;
@@ -57,19 +52,19 @@ code, pre, .font-mono {
   background: #334155;
 }
 
-/* Refined atmospheric background */
+/* Soft dark navy atmospheric background */
 .aura-bg {
-  background-color: #090d16;
+  background-color: #0b1222;
   background-image: 
-    radial-gradient(circle at 50% -10%, rgba(14, 165, 233, 0.08) 0%, transparent 60%),
-    radial-gradient(circle at 90% 20%, rgba(16, 185, 129, 0.04) 0%, transparent 50%),
-    linear-gradient(180deg, #090d16 0%, #060911 100%);
+    radial-gradient(circle at 50% -10%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
+    radial-gradient(circle at 85% 20%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+    linear-gradient(180deg, #0b1222 0%, #070c18 100%);
 }
 
 .aura-subtle-grid {
   background-size: 40px 40px;
   background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
 }
 

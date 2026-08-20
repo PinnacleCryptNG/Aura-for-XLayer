@@ -1,6 +1,6 @@
 {
   "name": "AURA",
-  "description": "AI-powered Web3 transaction intelligence & pre-execution sentinel deployed on X Layer Testnet (Chain ID 1952).",
+  "description": "Pre-signing Web3 transaction intelligence and token approval safety layer for OKX X Layer (Chain ID 196).",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

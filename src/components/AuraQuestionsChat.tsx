@@ -12,15 +12,15 @@ export const AuraQuestionsChat: React.FC<AuraQuestionsChatProps> = ({ facts }) =
   const [messages, setMessages] = useState<Array<{ sender: 'user' | 'aura'; text: string }>>([
     {
       sender: 'aura',
-      text: `Hello, I'm AURA. You can ask me anything about what this transaction does, what permissions it grants, or why it received a ${facts.riskLevel} risk score.`,
+      text: `Hello! I am AURA. You can ask me any question in simple words about what this transaction does or whether it is safe.`,
     },
   ]);
 
   const quickQuestions = [
-    'Why is this risky?',
-    'Can they take my OKB?',
-    'What happens if I approve this?',
-    'What should I change?',
+    'Is this safe?',
+    'Can they take my coins?',
+    'What should I do?',
+    'Why is it risky?',
   ];
 
   const handleAsk = async (qText: string) => {
@@ -40,14 +40,14 @@ export const AuraQuestionsChat: React.FC<AuraQuestionsChatProps> = ({ facts }) =
       const data = await res.json();
       setMessages((prev) => [
         ...prev,
-        { sender: 'aura', text: data.answer || 'AURA reviewed the transaction facts and recommends limiting permissions.' },
+        { sender: 'aura', text: data.answer || 'AURA recommends keeping your permissions limited so only the exact amount is spent.' },
       ]);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
         {
           sender: 'aura',
-          text: `Based on verified facts: This transaction grants permissions to ${facts.contractName}. Limit the approval to avoid exposing your full balance.`,
+          text: `AURA suggests: Always limit permissions to small amounts (like 1 USDT) so no website can touch your full balance.`,
         },
       ]);
     } finally {
@@ -56,25 +56,25 @@ export const AuraQuestionsChat: React.FC<AuraQuestionsChatProps> = ({ facts }) =
   };
 
   return (
-    <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-4 flex flex-col h-full">
-      <div className="flex items-center justify-between pb-3 border-b border-zinc-800">
+    <div className="bg-[#10172a] border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col h-full shadow-lg">
+      <div className="flex items-center justify-between pb-3 border-b border-slate-800">
         <div className="flex items-center space-x-2">
-          <div className="w-6 h-6 rounded-md bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="w-7 h-7 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center border border-emerald-500/20">
+            <Sparkles className="w-4 h-4" />
           </div>
-          <h4 className="text-xs font-semibold text-zinc-200">AURA Questions & Insights</h4>
+          <h4 className="text-xs sm:text-sm font-bold text-white">Ask AURA in Simple Words</h4>
         </div>
-        <span className="text-[10px] text-zinc-400">Grounded in verified facts</span>
+        <span className="text-[10px] text-slate-400 font-mono">Helper AI</span>
       </div>
 
       {/* Suggested Quick Question Chips */}
-      <div className="py-2 flex flex-wrap gap-1.5 border-b border-zinc-800/60">
+      <div className="py-2.5 flex flex-wrap gap-1.5 border-b border-slate-800">
         {quickQuestions.map((q, idx) => (
           <button
             key={idx}
             onClick={() => handleAsk(q)}
             disabled={loading}
-            className="text-[11px] px-2.5 py-1 rounded-full bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 border border-zinc-700/60 transition-colors text-left"
+            className="text-xs px-3 py-1 rounded-full bg-[#0b1222] hover:bg-slate-800 text-slate-200 border border-slate-700 transition-colors text-left cursor-pointer"
           >
             {q}
           </button>
@@ -89,23 +89,23 @@ export const AuraQuestionsChat: React.FC<AuraQuestionsChatProps> = ({ facts }) =
             className={`flex flex-col ${m.sender === 'user' ? 'items-end' : 'items-start'}`}
           >
             <div
-              className={`max-w-[90%] text-xs rounded-xl p-3 leading-relaxed ${
+              className={`max-w-[90%] text-xs sm:text-sm rounded-2xl p-3 leading-relaxed ${
                 m.sender === 'user'
-                  ? 'bg-zinc-800 text-zinc-100 border border-zinc-700'
-                  : 'bg-zinc-950/80 text-zinc-200 border border-zinc-800/90 shadow-sm'
+                  ? 'bg-slate-800 text-white border border-slate-700'
+                  : 'bg-[#0b1222] text-slate-200 border border-slate-800 shadow-sm'
               }`}
             >
               {m.text}
             </div>
-            <span className="text-[9px] text-zinc-500 mt-0.5 px-1 uppercase font-mono">
+            <span className="text-[9px] text-slate-400 mt-1 px-1 uppercase font-mono">
               {m.sender === 'user' ? 'You' : 'AURA'}
             </span>
           </div>
         ))}
         {loading && (
-          <div className="flex items-center space-x-2 text-zinc-400 text-xs py-1">
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-            <span>Analyzing verified transaction facts...</span>
+          <div className="flex items-center space-x-2 text-slate-400 text-xs py-1">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+            <span>Checking details for you...</span>
           </div>
         )}
       </div>
@@ -116,21 +116,21 @@ export const AuraQuestionsChat: React.FC<AuraQuestionsChatProps> = ({ facts }) =
           e.preventDefault();
           handleAsk(question);
         }}
-        className="mt-2 flex items-center space-x-2 pt-2 border-t border-zinc-800"
+        className="mt-2 flex items-center space-x-2 pt-2.5 border-t border-slate-800"
       >
         <input
           type="text"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask e.g. 'Can they take my funds?'"
-          className="flex-1 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-cyan-500/50"
+          placeholder="Ask e.g. 'Is this safe?'"
+          className="flex-1 bg-[#0b1222] border border-slate-700 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
         />
         <button
           type="submit"
           disabled={loading || !question.trim()}
-          className="px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white text-xs font-medium flex items-center space-x-1 transition-colors"
+          className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-xs sm:text-sm font-bold flex items-center space-x-1 transition-colors cursor-pointer"
         >
-          <Send className="w-3 h-3" />
+          <Send className="w-3.5 h-3.5" />
         </button>
       </form>
     </div>

@@ -53,9 +53,9 @@ export default function App() {
   const [balanceSymbol, setBalanceSymbol] = useState<string>('OKB');
   const [isConnectModalOpen, setIsConnectModalOpen] = useState<boolean>(false);
 
-  // Security Portfolio Metrics
-  const [healthScore, setHealthScore] = useState<number>(84);
-  const [portfolioValue, setPortfolioValue] = useState<number>(12480);
+  // Security Portfolio Metrics - Starts at 0 until a real wallet or demo is connected/scanned
+  const [healthScore, setHealthScore] = useState<number>(0);
+  const [portfolioValue, setPortfolioValue] = useState<number>(0);
   const [approvals, setApprovals] = useState<ApprovalItem[]>(INITIAL_APPROVALS);
   const [alerts, setAlerts] = useState<SecurityAlert[]>(INITIAL_ALERTS);
 
@@ -68,89 +68,8 @@ export default function App() {
     type: 'success' | 'warning';
   } | null>(null);
 
-  // Audit History Log
-  const [decisionRecords, setDecisionRecords] = useState<DecisionRecord[]>([
-    {
-      id: 'dec-1',
-      timestamp: 'Today, 2:40 PM',
-      txHash: '0x3a9f...e18b',
-      actionTitle: 'ExampleSwap Unlimited USDT Approval',
-      network: 'X Layer Mainnet',
-      chainId: 196,
-      targetAddress: '0x8391a27f69201f8449c239d1089201a4e8291a27',
-      targetName: 'ExampleSwap Router v3',
-      riskLevel: 'HIGH',
-      riskScore: 82,
-      userDecision: 'MODIFIED_LIMITED',
-      originalExposureUsd: 8420,
-      finalExposureUsd: 500,
-      savedExposureUsd: 7920,
-      whyUserSignedRecord:
-        'You approved this transaction after AURA warned of unlimited exposure on unverified bytecode. You modified the allowance to a safe $500 cap.',
-      summary: 'Unlimited USDT approval on newly deployed unverified router on X Layer.',
-      recommendation: 'LIMIT_APPROVAL',
-      facts: decodeAndAnalyzeTx({
-        to: '0x8391a27f69201f8449c239d1089201a4e8291a27',
-        chainId: 196,
-        customTokenSymbol: 'USDT',
-        customAmount: 'UNLIMITED',
-      }),
-    },
-    {
-      id: 'dec-2',
-      timestamp: 'Today, 1:15 PM',
-      txHash: '0x388c...9297',
-      actionTitle: 'OKX DEX Swap: 1,000 USDT -> OKB',
-      network: 'X Layer Mainnet',
-      chainId: 196,
-      targetAddress: '0x388c818ca8b9251b393131c08a736a67ccb19297',
-      targetName: 'OKX DEX Aggregator Router',
-      riskLevel: 'LOW',
-      riskScore: 12,
-      userDecision: 'APPROVED',
-      originalExposureUsd: 1000,
-      finalExposureUsd: 1000,
-      savedExposureUsd: 0,
-      whyUserSignedRecord:
-        'DEX trade routed via verified OKX Aggregator with safe 0.5% slippage tolerance on X Layer.',
-      summary: 'Optimized DEX swap with verified OKLink bytecode.',
-      recommendation: 'SAFE_TO_PROCEED',
-      facts: decodeAndAnalyzeTx({
-        to: '0x388c818ca8b9251b393131c08a736a67ccb19297',
-        chainId: 196,
-        data: '0x38ed1739',
-        customTokenSymbol: 'USDT',
-        customAmount: '1000',
-        customSlippage: 0.5,
-      }),
-    },
-    {
-      id: 'dec-3',
-      timestamp: 'Yesterday, 11:15 AM',
-      txHash: '0x99e2...bb41',
-      actionTitle: 'Send 50.00 USDT',
-      network: 'X Layer Mainnet',
-      chainId: 196,
-      targetAddress: '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5',
-      targetName: 'Alice.eth (Personal Wallet)',
-      riskLevel: 'LOW',
-      riskScore: 10,
-      userDecision: 'APPROVED',
-      originalExposureUsd: 50,
-      finalExposureUsd: 50,
-      savedExposureUsd: 0,
-      whyUserSignedRecord:
-        'Direct transfer to a verified contact on X Layer. No ongoing permissions granted.',
-      summary: 'Personal transfer of 50.00 USDT.',
-      recommendation: 'SAFE_TO_PROCEED',
-      facts: decodeAndAnalyzeTx({
-        to: '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5',
-        chainId: 196,
-        customTokenSymbol: 'USDT',
-        customAmount: '50',
-      }),
-    },
-  ]);
+  // Audit History Log - Starts clean with 0 records
+  const [decisionRecords, setDecisionRecords] = useState<DecisionRecord[]>([]);
 
   // Trigger Toast Notification helper
   const triggerToast = (
@@ -198,17 +117,17 @@ export default function App() {
       setPortfolioValue(12480);
       setHealthScore(84);
       triggerToast(
-        'X Layer Demo Sandbox Connected',
-        'Preloaded with $12,480 portfolio, active token allowances, and live drain traps.',
+        'Connected to X Layer',
+        'Connected to X Layer – scanning your permissions on OKX X Layer (Chain ID 196)...',
         'success'
       );
     } else {
-      await syncLiveBalance(address, matchedChain);
       triggerToast(
-        'Wallet Connected to X Layer',
-        `Active on ${matchedChain.name} (${address.slice(0, 6)}...${address.slice(-4)})`,
+        'Connected to X Layer',
+        'Connected to X Layer – scanning your permissions on OKX X Layer...',
         'success'
       );
+      await syncLiveBalance(address, matchedChain);
     }
   };
 
@@ -331,7 +250,7 @@ export default function App() {
           risk_explanation: facts.riskSignals.map((s) => `${s.title}: ${s.description}`),
           recommendation: facts.isUnlimitedApproval ? 'LIMIT_APPROVAL' : 'SAFE_TO_PROCEED',
           recommendation_detail: facts.isUnlimitedApproval
-            ? 'Do not approve unlimited access. Limit to $500 instead.'
+            ? 'Do not approve unlimited access. Limit to 1 USDT instead.'
             : 'Standard safe parameters detected.',
           confidence: 0.95,
           uncertainty: [],
@@ -357,17 +276,17 @@ export default function App() {
         data: '0x095ea7b30000000000000000000000008391a27f69201f8449c239d1089201a4e8291a27ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
         customTokenSymbol: 'USDT',
         customAmount: 'UNLIMITED',
-        actionTitle: 'ExampleSwap Unlimited USDT Approval',
+        actionTitle: 'Dangerous Unlimited USDT Permission (demo)',
       });
     } else if (demoId === 2) {
-      // Flagship Demo 2: Normal 50 USDT transfer
+      // Flagship Demo 2: Normal 1 USDT transfer
       handleAnalyzeTransaction({
         to: '0x95222290dd7278aa3ddd389cc1e1d165cc4bafe5',
         chainId: currentChain.id,
-        data: '0xa9059cbb00000000000000000000000095222290dd7278aa3ddd389cc1e1d165cc4bafe50000000000000000000000000000000000000000000000000000000002faf080',
+        data: '0xa9059cbb00000000000000000000000095222290dd7278aa3ddd389cc1e1d165cc4bafe500000000000000000000000000000000000000000000000000000000000f4240',
         customTokenSymbol: 'USDT',
-        customAmount: '50',
-        actionTitle: 'Personal 50.00 USDT Transfer',
+        customAmount: '1',
+        actionTitle: 'Safe 1 USDT Transfer to Friend',
       });
     } else if (demoId === 3) {
       setActiveTab('approvals');
@@ -398,7 +317,7 @@ export default function App() {
     let saved = 0;
 
     if (decision === 'MODIFIED_LIMITED') {
-      finalExposure = 500;
+      finalExposure = 1;
       saved = Math.max(0, originalExposure - finalExposure);
     }
 
@@ -421,7 +340,7 @@ export default function App() {
       savedExposureUsd: saved,
       whyUserSignedRecord:
         decision === 'MODIFIED_LIMITED'
-          ? `You limited the allowance to ${modifiedAmount || '$500'}, successfully protecting $${saved.toLocaleString()} in wallet assets.`
+          ? `You limited the allowance to ${modifiedAmount || '1 USDT'}, successfully protecting $${saved.toLocaleString()} in wallet assets.`
           : `You approved the transaction after reviewing AURA's verified risk assessment.`,
       summary: activeAnalysis.explanation.summary,
       recommendation: activeAnalysis.explanation.recommendation,
@@ -433,7 +352,7 @@ export default function App() {
     if (decision === 'MODIFIED_LIMITED') {
       triggerToast(
         'Transaction Protected on X Layer',
-        `Allowance safely capped at ${modifiedAmount || '$500'}. You avoided $${saved.toLocaleString()} in unnecessary exposure!`,
+        `Allowance safely capped at ${modifiedAmount || '1 USDT'}. You avoided $${saved.toLocaleString()} in unnecessary exposure!`,
         'success'
       );
       setHealthScore((prev) => Math.min(96, prev + 6));
@@ -640,10 +559,10 @@ export default function App() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-200">
-                    AURA Sentinel Intercepting Transaction
+                    Checking Transaction Safety
                   </h3>
                   <p className="text-xs text-slate-400 mt-1">
-                    Decoding bytecode and querying OKLink verification on {currentChain.name}...
+                    Inspecting parameters and verification on {currentChain.name}...
                   </p>
                 </div>
               </div>
@@ -655,17 +574,17 @@ export default function App() {
               />
             ) : (
               <div className="space-y-5">
-                {/* Clean, Simple Interceptor Banner */}
+                {/* Clean, Simple Safety Banner */}
                 <div className="bg-slate-900/60 border border-slate-800/80 rounded-2xl p-4 sm:p-6 text-center space-y-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mx-auto">
                     <ShieldCheck className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="text-base font-bold text-slate-100">
-                      Transaction Interceptor Active on {currentChain.name}
+                      Transaction Safety Check • {currentChain.name}
                     </h3>
                     <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
-                      AURA simulates and verifies transactions before you sign. Test an instant scenario or paste your custom calldata below:
+                      Simulate and check any transaction before signing. Try a quick preset or inspect custom transaction data:
                     </p>
                   </div>
                   <div className="pt-2 flex flex-wrap justify-center gap-2">
@@ -673,20 +592,20 @@ export default function App() {
                       onClick={() => handleLaunchDemo(1)}
                       className="px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-semibold cursor-pointer transition-colors"
                     >
-                      Test Drainer (Unlimited USDT)
+                      Try Drainer Trap (demo only)
                     </button>
                     <button
                       onClick={() => handleLaunchDemo(2)}
                       className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 text-xs font-semibold cursor-pointer transition-colors"
                     >
-                      Test Normal Transfer (50 USDT)
+                      Try Normal Transfer (1 USDT)
                     </button>
                     <button
                       onClick={() => setActiveTab('agent')}
                       className="px-3 py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border border-cyan-500/30 text-xs font-semibold cursor-pointer transition-colors flex items-center gap-1.5"
                     >
                       <Bot className="w-3.5 h-3.5" />
-                      <span>Agent Guardrails</span>
+                      <span>Safety Rules</span>
                     </button>
                   </div>
                 </div>
