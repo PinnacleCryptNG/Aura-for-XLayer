@@ -1,0 +1,6 @@
+{
+  "name": "AURA",
+  "description": "AI-powered Web3 transaction intelligence & pre-execution sentinel deployed on X Layer Testnet (Chain ID 1952).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
